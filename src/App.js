@@ -43,13 +43,13 @@ function SignIn() {
   }
 
   return (
-    <button onclick={signInWithGoogle}>Sign in with Google</button>
+    <button onClick={signInWithGoogle}>Sign in with Google</button>
   )
 }
 
 function SignOut() {
   return auth.currentUser && (
-    <button onclick={() => auth.signOut()}>Sign Out</button>
+    <button onClick={() => auth.signOut()}>Sign Out</button>
   )
 }
 
