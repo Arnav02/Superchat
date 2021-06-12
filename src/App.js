@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './App.css';
 
 import firebase from 'firebase/app';
@@ -25,9 +25,9 @@ function App() {
   const [user] = useAuthState(auth);
   return (
     <div className="App">
-      <header>
+      {/* <header>
 
-      </header>
+      </header> */}
 
       <section>
         {user ? <ChatRoom /> : <SignIn />}
@@ -54,10 +54,12 @@ function SignOut() {
 }
 
 function ChatRoom() {
+  const dummy = useRef();
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25);
   const [messages] = useCollectionData(query, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
+
   const sendMessage = async (e) => {
     e.preventDeafualt();
     const { uid, photoURL } = auth.currentUser;
@@ -69,13 +71,16 @@ function ChatRoom() {
     });
 
     setFormValue('');
+
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
 
   return (
     <>
-      <div>
+      <main>
         {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
-      </div>
+        <div ref={dummy}></div>
+      </main>
 
       <form onSubmit={sendMessage}>
         <input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
@@ -86,7 +91,7 @@ function ChatRoom() {
 }
 
 function ChatMessage(props) {
-  const { text, uid } = props.message;
+  const { text, uid, photoURL } = props.message;
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
   return (
